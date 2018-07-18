@@ -1,0 +1,47 @@
+sudo: required
+
+# Travis doesn't provide a wide variety of host environments to run on, so we
+# rely on Docker to provide these instead.
+services:
+  - docker
+
+# It is not really needed, other than for showing correct language tag in
+# Travis CI build log.
+language: cpp
+
+# The matrix of targets that we're interested in.
+env:
+  - HOST="ubuntu:16.04"
+
+# Before running the install phase we need to set up docker container that runs
+# the target machine.
+before_install:
+  - docker run -d --name host -v $(pwd):/travis $HOST tail -f /dev/null
+  - docker run -d --name dist -v $(pwd):/travis $HOST tail -f /dev/null
+  - docker ps
+
+# This is another pre-install phase where we update the container that was just
+# set up.  I don't know why these are split, I just copied some tutorial and
+# that's how they did it.
+install:
+  - docker exec -t host bash -c "yes | apt-get update"
+  - docker exec -t host bash -c "yes | apt-get upgrade"
+  - docker exec -t host bash -c "yes | apt-get install autoconf automake build-essential git python3"
+  - docker exec -t dist bash -c "yes | apt-get update"
+  - docker exec -t dist bash -c "yes | apt-get upgrade"
+  - docker exec -t dist bash -c "yes | apt-get install build-essential python3"
+
+# Here's where we actually run the test.
+script:
+  - docker exec -t host bash -c "cd /travis && autoreconf -i"
+  - docker exec -t host bash -c "cd /travis && ./configure"
+  - docker exec -t host bash -c "cd /travis && make"
+  - docker exec -t host bash -c "cd /travis && make install"
+  - docker exec -t host bash -c "cd /travis && make check"
+  - docker exec -t host bash -c "cd /travis && make dist"
+  - docker exec -t host bash -c "cd /travis && make distcheck"
+  - docker exec -t dist bash -c "cd /travis && tar -xvzpf elf2hex-*.tar.gz"
+  - docker exec -t dist bash -c "cd /travis/elf2hex-*/ && ./configure"
+  - docker exec -t dist bash -c "cd /travis/elf2hex-*/ && make"
+  - docker exec -t dist bash -c "cd /travis/elf2hex-*/ && make install"
+  - docker exec -t dist bash -c "cd /travis/elf2hex-*/ && make check"
