@@ -15,6 +15,7 @@ python_PYTHON = freedom-bin2hex.py
 
 EXTRA_DIST  = freedom-bin2hex.sh
 EXTRA_DIST += freedom-elf2hex.sh
+EXTRA_DIST += README.md
 
 clean-local:
 	-rm -f bin2hex elf2hex
