@@ -19,3 +19,7 @@
 /*.tar.gz
 /freedom-bin2hex
 /py-compile
+/config.guess
+/config.sub
+/elf2hex
+/bin2hex
