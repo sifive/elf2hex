@@ -8,8 +8,8 @@ bin2hex="@BIN2HEX@"
 while [[ "$1" != "" ]]
 do
     case "$1" in
-    -h) echo "$0 [-h] --bit-width BIT_WIDTH --input INPUT.ELF [--output OUTPUT.HEX]" >&2; exit 0;;
-    -w|--bit-width) bit_width="$2"; shift 2;;
+    -h | --help) echo "$0 [-h, --help] --bit-width BIT_WIDTH --input INPUT.ELF [--output OUTPUT.HEX]" >&2; exit 0;;
+    -w | --bit-width) bit_width="$2"; shift 2;;
     --input) input="$2"; shift 2;;
     --output) output="$2"; shift 2;;
     *) echo "$0: unknown argument $1">&2; exit 1;;
