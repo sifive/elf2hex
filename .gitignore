@@ -11,6 +11,5 @@
 *.swo
 /*.tar.gz
 /freedom-bin2hex
-/py-compile
 /elf2hex
 /bin2hex
