@@ -3,7 +3,13 @@
 
 import argparse
 import sys
-from itertools import zip_longest
+
+try:
+# Python 3
+    from itertools import zip_longest
+except ImportError:
+# Python 2
+    from itertools import izip_longest as zip_longest
 
 
 # Copied from https://docs.python.org/3/library/itertools.html
@@ -18,7 +24,10 @@ def convert(bit_width, infile, outfile):
     byte_width = bit_width // 8
     for row in grouper(infile.read(), byte_width, fillvalue=0):
         # Reverse because in Verilog most-significant bit of vectors is first.
-        hex_row = ''.join('{:02x}'.format(b) for b in reversed(row))
+        if sys.version_info >= (3, 0):
+            hex_row = ''.join('{:02x}'.format(b) for b in reversed(row))
+        else:
+            hex_row = ''.join('{:02x}'.format(ord(b)) for b in reversed(row))
         outfile.write(hex_row + '\n')
 
 
@@ -28,10 +37,16 @@ def main():
                     'verilog via $readmemh(). By default read from stdin '
                     'and write to stdout.'
     )
-    parser.add_argument('infile',
-                        nargs='?',
-                        type=argparse.FileType('rb'),
-                        default=sys.stdin.buffer)
+    if sys.version_info >= (3, 0):
+        parser.add_argument('infile',
+                            nargs='?',
+                            type=argparse.FileType('rb'),
+                            default=sys.stdin.buffer)
+    else:
+        parser.add_argument('infile',
+                            nargs='?',
+                            type=argparse.FileType('rb'),
+                            default=sys.stdin)
     parser.add_argument('outfile',
                         nargs='?',
                         type=argparse.FileType('w'),
