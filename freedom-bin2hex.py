@@ -22,13 +22,16 @@ def grouper(iterable, n, fillvalue=None):
 
 def convert(bit_width, infile, outfile):
     byte_width = bit_width // 8
-    for row in grouper(infile.read(), byte_width, fillvalue=0):
-        # Reverse because in Verilog most-significant bit of vectors is first.
-        if sys.version_info >= (3, 0):
+    if sys.version_info >= (3, 0):
+        for row in grouper(infile.read(), byte_width, fillvalue=0):
+            # Reverse because in Verilog most-significant bit of vectors is first.
             hex_row = ''.join('{:02x}'.format(b) for b in reversed(row))
-        else:
+            outfile.write(hex_row + '\n')
+    else:
+        for row in grouper(infile.read(), byte_width, fillvalue='\x00'):
+            # Reverse because in Verilog most-significant bit of vectors is first.
             hex_row = ''.join('{:02x}'.format(ord(b)) for b in reversed(row))
-        outfile.write(hex_row + '\n')
+            outfile.write(hex_row + '\n')
 
 
 def main():
