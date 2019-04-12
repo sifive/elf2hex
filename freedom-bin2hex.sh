@@ -1,2 +1,2 @@
 #!/bin/sh
-exec @PYTHON@ '@pythondir@/freedom-bin2hex.py' ${1+"$@"}
+exec @PYTHON@ -u '@pythondir@/freedom-bin2hex.py' ${1+"$@"}
