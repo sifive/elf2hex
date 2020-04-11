@@ -20,8 +20,12 @@ def grouper(iterable, n, fillvalue=None):
     return zip_longest(*args, fillvalue=fillvalue)
 
 
-def convert(bit_width, infile, outfile):
+def convert(bit_width, offset, infile, outfile):
     byte_width = bit_width // 8
+
+    for i in range(offset // byte_width):
+        outfile.write('00'.zfill(2 * byte_width) + '\n')
+
     if sys.version_info >= (3, 0):
         for row in grouper(infile.read(), byte_width, fillvalue=0):
             # Reverse because in Verilog most-significant bit of vectors is first.
@@ -32,7 +36,6 @@ def convert(bit_width, infile, outfile):
             # Reverse because in Verilog most-significant bit of vectors is first.
             hex_row = ''.join('{:02x}'.format(ord(b)) for b in reversed(row))
             outfile.write(hex_row + '\n')
-
 
 def main():
     parser = argparse.ArgumentParser(
@@ -54,6 +57,11 @@ def main():
                         nargs='?',
                         type=argparse.FileType('w'),
                         default=sys.stdout)
+    parser.add_argument('--offset',
+                        type=lambda x: int(x,0),
+                        default=0x0,
+                        help='How many zeros to prepend.')
+
     parser.add_argument('--bit-width', '-w',
                         type=int,
                         required=True,
@@ -62,7 +70,7 @@ def main():
 
     if args.bit_width % 8 != 0:
         sys.exit("Cannot handle non-multiple-of-8 bit width yet.")
-    convert(args.bit_width, args.infile, args.outfile)
+    convert(args.bit_width, args.offset, args.infile, args.outfile)
 
 
 if __name__ == '__main__':
