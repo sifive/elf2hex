@@ -6,7 +6,7 @@ objcopy="@OBJCOPY@"
 while [[ "$1" != "" ]]
 do
     case "$1" in
-    -h | --help) echo "$0 [-h, --help] --input INPUT.ELF [--output OUTPUT.HEX]" >&2; exit 0;;
+    -h | --help) echo "$0 [-h, --help] --input INPUT.ELF [--output OUTPUT.BIN]" >&2; exit 0;;
     --input) input="$2"; shift 2;;
     --output) output="$2"; shift 2;;
     *) echo "$0: unknown argument $1">&2; exit 1;;
@@ -15,7 +15,7 @@ done
    
 if [[ "$input" == "" ]]
 then
-    echo "$0 [-h, --help] --input INPUT.ELF [--output OUTPUT.HEX]" >&2
+    echo "$0 [-h, --help] --input INPUT.ELF [--output OUTPUT.BIN]" >&2
     exit 1
 fi
 
