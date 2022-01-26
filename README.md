@@ -14,8 +14,8 @@ tarball](https://github.com/sifive/elf2hex/releases/download/v1.0.1/elf2hex-1.0.
 as these releases have been tested.  `elf2hex` uses the standard GNU
 build flow:
 
-   tar -xvzpf elf2hex-1.0.1.tar.gz
-   cd elf2hex-1.0.1
+    tar -xvzpf elf2hex-1.0.1.tar.gz
+    cd elf2hex-1.0.1
     ./configure --target=riscv64-unknown-elf
     make
     make install
